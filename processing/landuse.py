@@ -14,3 +14,6 @@ class FeatureClassLanduseArea(AbstractFeatureClass):
         self.fcgeometry = FeatureClassGeometry(name=self.name, geometry=self.geometry)
         self.fcgeometry.simplify_to_scale()
         self.fcgeometry.calculate_area()
+
+    def test(self):
+        pass
