@@ -13,10 +13,10 @@ class FeatureClassHighwayPoint(AbstractFeatureClass):
         self.geometry = feature.split("_")[-1]
         self.duplicate = f"{self.name}_1"
         self.fcgeometry = FeatureClassGeometry(name=self.name, geometry=self.geometry)
-        self.duplicate = self.fcgeometry.select_by_attribute(attribute="motorway_junction", out_name=f"{self.name}_motorway")
-        self.fcgeometry.integrate(layer = self.duplicate, distance= 500)
-        self.fcgeometry.add_x_y(self.duplicate)
-        self.dissolve_duplicate = self.fcgeometry.dissolve_point(fields=["POINT_X;POINT_Y"], layer=self.duplicate)
-        self.fcgeometry.spatial_join_highway_motorway_junction(
-            target = self.dissolve_duplicate,
-            join = self.duplicate)
+        # self.duplicate = self.fcgeometry.select_by_attribute(attribute="motorway_junction", out_name=f"{self.name}_motorway")
+        # self.fcgeometry.integrate(layer = self.duplicate, distance= 500)
+        # self.fcgeometry.add_x_y(self.duplicate)
+        # self.dissolve_duplicate = self.fcgeometry.dissolve_point(fields=["POINT_X;POINT_Y"], layer=self.duplicate)
+        # self.fcgeometry.spatial_join_highway_motorway_junction(
+        #     target = self.dissolve_duplicate,
+        #     join = self.duplicate)
