@@ -131,7 +131,6 @@ class FeatureClassGeometry:
             where_clause= f"{self.name[:self.name.rfind('_')]} = '{attribute}'" if not inverse
             else f"{self.name[:self.name.rfind('_')]} <> '{attribute}'"
         )
-        print(fr"{arcpy.env.workspace}\{out_name}")
         return fr"{arcpy.env.workspace}\{out_name}"
 
     def select_features(self, attribute: str, field: str):
@@ -140,21 +139,3 @@ class FeatureClassGeometry:
             selection_type="NEW_SELECTION",
             where_clause=f"{attribute} = '{field}'"
         )
-
-    def spatial_join_highway_motorway_junction(self, target: str, join: str):
-        arcpy.analysis.SpatialJoin(
-            target, join, fr"{arcpy.env.workspace}\{self.name}_centralized",
-            "JOIN_ONE_TO_ONE", "KEEP_ALL",
-            r'POINT_X "POINT_X" true true false 8 Double 0 0,First,#,'
-            r'D:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230425.gdb\highway_point_motorway_dissolve,'
-            r'POINT_X,-1,-1;POINT_Y "POINT_Y" true true false 8 Double 0 0,First,#,'
-            r'D:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230425.gdb\highway_point_motorway_dissolve,'
-            r'POINT_Y,-1,-1;geom_type "geom_type" true true false 80 Text 0 0,First,#,'
-            r'D:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230425.gdb\highway_point_motorway,geom_type,0,'
-            r'80;name "name" true true false 80 Text 0 0,First,#,'
-            r'D:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230425.gdb\highway_point_motorway,name,0,'
-            r'80;highway "highway" true true false 80 Text 0 0,First,#,'
-            r'D:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230425.gdb\highway_point_motorway,highway,0,'
-            r'80;ref "ref" true true false 80 Text 0 0,First,#,'
-            r'D:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230425.gdb\highway_point_motorway,ref,0,80',
-            "INTERSECT", "5 Meters", '')
