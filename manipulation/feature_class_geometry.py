@@ -76,10 +76,10 @@ class FeatureClassGeometry:
         :param distance: int | point in meters distance each other to aggregate
         """
         if layer is None:
-            with arcpy.EnvManager(XYTolerance = f"{distance} Meters"):
+            with arcpy.EnvManager(XYTolerance=f"{distance} Meters"):
                 arcpy.analysis.PairwiseIntegrate(self.name, None)
         else:
-            with arcpy.EnvManager(XYTolerance = f"{distance} Meters"):
+            with arcpy.EnvManager(XYTolerance=f"{distance} Meters"):
                 arcpy.analysis.PairwiseIntegrate(layer, None)
 
     def add_x_y(self, layer: str = None) -> None:
@@ -126,16 +126,19 @@ class FeatureClassGeometry:
 
     def select_by_attribute(self, attribute: str, out_name: str, inverse: bool = False) -> str:
         arcpy.analysis.Select(
-            in_features = self.name,
-            out_feature_class =fr"{arcpy.env.workspace}\{out_name}",
-            where_clause= f"{self.name[:self.name.rfind('_')]} = '{attribute}'" if not inverse
+            in_features=self.name,
+            out_feature_class=fr"{arcpy.env.workspace}\{out_name}",
+            where_clause=f"{self.name[:self.name.rfind('_')]} = '{attribute}'" if not inverse
             else f"{self.name[:self.name.rfind('_')]} <> '{attribute}'"
         )
         return fr"{arcpy.env.workspace}\{out_name}"
 
-    def select_features(self, attribute: str, field: str):
-        arcpy.management.SelectLayerByAttribute(
-            in_layer_or_view= self.name,
-            selection_type="NEW_SELECTION",
-            where_clause=f"{attribute} = '{field}'"
+    def delete_features(self, attribute: str, field: str):
+        arcpy.management.DeleteRows(
+            in_rows=arcpy.management.SelectLayerByAttribute(
+                in_layer_or_view=self.name,
+                selection_type="NEW_SELECTION",
+                where_clause=f"{attribute} = '{field}'"
+            )
         )
+
