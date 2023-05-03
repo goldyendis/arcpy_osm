@@ -39,13 +39,12 @@ class GDBRefresh:
         project_gdbs = [pathlib.Path(i).name for i in glob.glob(fr"{self.project_location}\\*.gdb") if
                         re.match("^\d{8}", pathlib.Path(i).name) is not None]
         project_gdbs.sort(reverse=True)
-        print(project_gdbs)
 
         # TODO két IF-et kivenni a véglegesben, más réteg ne legyen a Proban,csak amihez van a gdb-ben is feature
         for layer in pro_map.listLayers():
             if layer.connectionProperties is not None:
                 if layer.connectionProperties["connection_info"][
-                        "database"] == fr'd:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230426.gdb':
+                        "database"] == fr'd:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230502.gdb':
                     new_connection_properties = layer.connectionProperties
                     new_connection_properties["connection_info"][
                         "database"] = f"{self.project_location}\\{project_gdbs[0]}"
