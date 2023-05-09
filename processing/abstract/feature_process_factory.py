@@ -2,6 +2,7 @@ from processing.barrier_point import FeatureClassBarrierPoint
 from processing.highway_point import FeatureClassHighwayPoint
 from processing.landuse import FeatureClassLanduseArea
 from processing.man_made_point import FeatureClassManMadePoint
+from processing.railway_point import FeatureClassRailwayPoint
 
 
 class FeatureProcessFactory:
@@ -19,3 +20,6 @@ class FeatureProcessFactory:
         if feature == "man_made_point":
             print("man_made_POINT")
             FeatureClassManMadePoint(feature = feature)
+        if feature == "railway_point":
+            print("railway_point")
+            FeatureClassRailwayPoint(feature = feature)
