@@ -133,35 +133,42 @@ class FeatureClassGeometry:
     #     )
     #     return fr"{arcpy.env.workspace}\{out_name}"
 
-    def delete_features(self, attribute: str, field: str):
-        arcpy.management.DeleteRows(
-            in_rows=arcpy.management.SelectLayerByAttribute(
-                in_layer_or_view=self.name,
-                selection_type="NEW_SELECTION",
-                where_clause=f"{attribute} = '{field}'"
+    def delete_features(self, attribute: str=None, field: str=None, in_view=None):
+        if in_view is not None:
+            arcpy.management.DeleteRows(
+                in_rows=in_view)
+        else:
+            arcpy.management.DeleteRows(
+                arcpy.management.SelectLayerByAttribute(
+                    in_layer_or_view=self.name,
+                    selection_type="NEW_SELECTION",
+                    where_clause=f"{attribute} = '{field}'"
+                )
             )
-        )
 
-    def select_features_by_attributes(self, attribute: str, field: str, selection_type: str = "NEW_SELECTION", in_view: str = None):
+    def select_features_by_attributes(self, attribute: str, field: str, selection_type: str = "NEW_SELECTION",
+                                      in_view: str = None):
         return arcpy.management.SelectLayerByAttribute(
             in_layer_or_view=self.name if in_view is None else in_view,
             selection_type=selection_type,
             where_clause=f"{attribute} = '{field}'"
         )
 
-    def select_feature_by_locations(self, in_layer, target):
+    def select_feature_by_locations(self, target, in_layer=None, selection_type="NEW_SELECTION", invert=True):
         return arcpy.management.SelectLayerByLocation(
-            in_layer=in_layer,
+            in_layer=self.name if in_layer is None else in_layer,
             overlap_type="WITHIN_A_DISTANCE",
             select_features=target,
             search_distance="1 Meters",
-            selection_type="NEW_SELECTION",
-            invert_spatial_relationship="INVERT"
+            selection_type=selection_type,
+            invert_spatial_relationship=invert
         )
 
     def snap_railway_stations_to_line(self, line):
         railway_line_light_rail = line.select_features_by_attributes(attribute="railway", field="light_rail")
         railway_line_rail = line.select_features_by_attributes(attribute="railway", field="rail")
+        railway_line_rail_all = line.select_features_by_attributes(
+            attribute="railway", field="narrow_gauge", in_view=railway_line_rail, selection_type="ADD_TO_SELECTION")
         railway_line_subway = line.select_features_by_attributes(attribute="railway", field="subway")
 
         arcpy.edit.Snap(
@@ -174,9 +181,39 @@ class FeatureClassGeometry:
                                                      field="tram_stop", in_view=railway_with_tram)
         arcpy.edit.Snap(
             in_features=railway,
-            snap_environment=f"{railway_line_rail} EDGE '50 Meters';{railway_line_rail} VERTEX '50 Meters'"
+            snap_environment=f"{railway_line_rail_all} EDGE '50 Meters';{railway_line_rail_all} VERTEX '50 Meters'"
         )
         arcpy.edit.Snap(
             in_features=self.select_features_by_attributes(attribute="station", field="subway"),
             snap_environment=f"{railway_line_subway} EDGE '50 Meters';{railway_line_subway} VERTEX '50 Meters'"
+        )
+        railway_not_touch = self.select_feature_by_locations(in_layer="railway_point", target="railway_egyben_line")
+        railway_to_delete_one = self.select_features_by_attributes(
+            attribute="station", field="funicular", in_view=railway_not_touch, selection_type="REMOVE_FROM_SELECTION")
+        railway_to_delete_two = self.select_features_by_attributes(
+            attribute="railway", field="tram_stop", in_view=railway_to_delete_one,
+            selection_type="REMOVE_FROM_SELECTION")
+        railway_to_delete = self.select_features_by_attributes(
+            attribute="station", field="light_rail", in_view=railway_to_delete_two,
+            selection_type="REMOVE_FROM_SELECTION")
+
+        self.delete_features(in_view=railway_to_delete)
+
+    def buffer(self, in_feature: str, distance: str = "15"):
+        arcpy.analysis.PairwiseBuffer(
+            in_features=in_feature,
+            out_feature_class=fr"{arcpy.env.workspace}\{self.name}_buffer",
+            buffer_distance_or_field=f"{distance} Meters",
+            dissolve_option="NONE",
+            dissolve_field=None,
+            method="PLANAR",
+            max_deviation="0 Meters"
+        )
+
+    def clip(self, in_feature: str, clippe: str):
+        arcpy.analysis.PairwiseClip(
+            in_features=in_feature,
+            clip_features=clippe,
+            out_feature_class=fr"{arcpy.env.workspace}\{in_feature}_clipped",
+            cluster_tolerance=None
         )
