@@ -17,19 +17,16 @@ class FeatureClassGeometry:
         self.name = name
         self.geometry = geometry
 
-    # def dissolve(self, fields, layer = None, ):
-    #     if layer is None:
-    #         arcpy.management.Dissolve(
-    #             fr"{arcpy.env.workspace}\{self.name}",
-    #             fr"{arcpy.env.workspace}\{self.name}_dissolve",
-    #             "name;landuse", None, "MULTI_PART", "UNSPLIT_LINES", '')
-    #         return fr"{arcpy.env.workspace}\{self.name}_dissolve"
-    #     else:
-    #         arcpy.management.Dissolve(
-    #             fr"{arcpy.env.workspace}\{layer}",
-    #             fr"{arcpy.env.workspace}\{layer}_dissolve",
-    #             *fields, None, "MULTI_PART", "UNSPLIT_LINES", '')
-    #         return fr"{arcpy.env.workspace}\{self.name}_dissolve"
+    def dissolve(self, in_feature,fields=None, multi_part: str = "SINGLE_PART", unsplit_lines: str="DISSOLVE_LINES"):
+        arcpy.management.Dissolve(
+            in_features = in_feature,
+            dissolve_field= fields,
+            statistics_fields=None,
+            multi_part=multi_part,
+            unsplit_lines=unsplit_lines,
+            out_feature_class=fr"{arcpy.env.workspace}\{in_feature}_dissolve",)
+
+        return fr"{arcpy.env.workspace}\{self.name}_dissolve"
 
     def simplify_to_scale(self) -> None:
         """
@@ -59,6 +56,15 @@ class FeatureClassGeometry:
         else:
             arcpy.AddField_management(feature_name, "Calc_Area", "DOUBLE")
             arcpy.CalculateField_management(feature_name, "Calc_Area", "!SHAPE.AREA@SQUAREMETERS!", "PYTHON_9.3")
+
+    def calculate_field(self, field: str, code_block: str, expression: str = None,
+                        expression_type: str = "PYTHON3", field_type: str = "TEXT", in_table=None):
+        arcpy.CalculateField_management(
+            in_table=self.name if in_table is None else in_table,
+            field=field, expression="function()" if expression is None else expression,
+            expression_type=expression_type,
+            code_block=code_block, field_type=field_type
+        )
 
     def copy_feature_layer(self, out_name: str) -> None:
         """
@@ -124,16 +130,8 @@ class FeatureClassGeometry:
             '#,barrier_point_1,barrier,0,80',
             "INTERSECT", "5 Meters", '')
 
-    # def select_by_attribute(self, attribute: str, out_name: str, inverse: bool = False) -> str:
-    #     arcpy.analysis.Select(
-    #         in_features=self.name,
-    #         out_feature_class=fr"{arcpy.env.workspace}\{out_name}",
-    #         where_clause=f"{self.name[:self.name.rfind('_')]} = '{attribute}'" if not inverse
-    #         else f"{self.name[:self.name.rfind('_')]} <> '{attribute}'"
-    #     )
-    #     return fr"{arcpy.env.workspace}\{out_name}"
 
-    def delete_features(self, attribute: str=None, field: str=None, in_view=None):
+    def delete_features(self, attribute: str= None, field: str= None, in_view=None):
         if in_view is not None:
             arcpy.management.DeleteRows(
                 in_rows=in_view)
@@ -216,4 +214,24 @@ class FeatureClassGeometry:
             clip_features=clippe,
             out_feature_class=fr"{arcpy.env.workspace}\{in_feature}_clipped",
             cluster_tolerance=None
+        )
+
+    def multipart_to_singlepart(self, in_feature: str):
+        arcpy.management.MultipartToSinglepart(
+            in_features=in_feature,
+            out_feature_class=fr"{arcpy.env.workspace}\{in_feature}_singlepart"
+        )
+
+    def spatial_join_railway_angle(self):
+        arcpy.management.AddSpatialJoin(
+            target_features=self.name,
+            join_features="railway_egyben_line_clipped_singlepart_dissolve",
+            join_operation="JOIN_ONE_TO_ONE",
+            join_type="KEEP_ALL",
+            field_mapping=r'angle "angle" true true false 4 Float 0 0,First,#,'
+                          r'D:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230510.gdb'
+                          r'\railway_egyben_line_clipped_singlepart_dissolve,angle,-1,-1',
+            match_option="WITHIN_A_DISTANCE",
+            search_radius="1 Meters",
+            distance_field_name=""
         )
