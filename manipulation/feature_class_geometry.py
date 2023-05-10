@@ -223,14 +223,17 @@ class FeatureClassGeometry:
         )
 
     def spatial_join_railway_angle(self):
-        arcpy.management.AddSpatialJoin(
+        arcpy.analysis.SpatialJoin(
             target_features=self.name,
-            join_features="railway_egyben_line_clipped_singlepart_dissolve",
+            join_features=fr"{arcpy.env.workspace}\railway_egyben_line_clipped_singlepart_dissolve",
+            out_feature_class=fr"{arcpy.env.workspace}\{self.name}_angle",
             join_operation="JOIN_ONE_TO_ONE",
             join_type="KEEP_ALL",
-            field_mapping=r'angle "angle" true true false 4 Float 0 0,First,#,'
-                          r'D:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230510.gdb'
-                          r'\railway_egyben_line_clipped_singlepart_dissolve,angle,-1,-1',
+            field_mapping='geom_type "geom_type" true true false 80 Text 0 0,First,#,railway_point,geom_type,0,'
+                          '80;name "name" true true false 80 Text 0 0,First,#,railway_point,name,0,80;railway '
+                          '"railway" true true false 80 Text 0 0,First,#,railway_point,railway,0,80;station "station" '
+                          'true true false 80 Text 0 0,First,#,railway_point,station,0,80;angle "angle" true true '
+                          'false 4 Float 0 0,First,#,railway_egyben_line_clipped_singlepart_dissolve,angle,-1,-1',
             match_option="WITHIN_A_DISTANCE",
             search_radius="1 Meters",
             distance_field_name=""
