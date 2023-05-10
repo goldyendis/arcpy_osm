@@ -3,14 +3,14 @@ from datetime import date
 import arcpy.management
 import arcpy.cartography
 import arcpy.analysis
+import arcpy.edit
 
 from utils_arcpro.simplify import Simplify
 
 
 class FeatureClassGeometry:
     def __init__(self, name: str, geometry: str) -> None:
-        """
-        Class to manipulate Fields and geometry of the FeatureLayers
+        """Class to manipulate Fields and geometry of the FeatureLayers.
         :param name: str | The name of the feature layer
         :param geometry: str | Type of geometry("area","line","point")
         """
@@ -124,14 +124,14 @@ class FeatureClassGeometry:
             '#,barrier_point_1,barrier,0,80',
             "INTERSECT", "5 Meters", '')
 
-    def select_by_attribute(self, attribute: str, out_name: str, inverse: bool = False) -> str:
-        arcpy.analysis.Select(
-            in_features=self.name,
-            out_feature_class=fr"{arcpy.env.workspace}\{out_name}",
-            where_clause=f"{self.name[:self.name.rfind('_')]} = '{attribute}'" if not inverse
-            else f"{self.name[:self.name.rfind('_')]} <> '{attribute}'"
-        )
-        return fr"{arcpy.env.workspace}\{out_name}"
+    # def select_by_attribute(self, attribute: str, out_name: str, inverse: bool = False) -> str:
+    #     arcpy.analysis.Select(
+    #         in_features=self.name,
+    #         out_feature_class=fr"{arcpy.env.workspace}\{out_name}",
+    #         where_clause=f"{self.name[:self.name.rfind('_')]} = '{attribute}'" if not inverse
+    #         else f"{self.name[:self.name.rfind('_')]} <> '{attribute}'"
+    #     )
+    #     return fr"{arcpy.env.workspace}\{out_name}"
 
     def delete_features(self, attribute: str, field: str):
         arcpy.management.DeleteRows(
@@ -142,3 +142,41 @@ class FeatureClassGeometry:
             )
         )
 
+    def select_features_by_attributes(self, attribute: str, field: str, selection_type: str = "NEW_SELECTION", in_view: str = None):
+        return arcpy.management.SelectLayerByAttribute(
+            in_layer_or_view=self.name if in_view is None else in_view,
+            selection_type=selection_type,
+            where_clause=f"{attribute} = '{field}'"
+        )
+
+    def select_feature_by_locations(self, in_layer, target):
+        return arcpy.management.SelectLayerByLocation(
+            in_layer=in_layer,
+            overlap_type="WITHIN_A_DISTANCE",
+            select_features=target,
+            search_distance="1 Meters",
+            selection_type="NEW_SELECTION",
+            invert_spatial_relationship="INVERT"
+        )
+
+    def snap_railway_stations_to_line(self, line):
+        railway_line_light_rail = line.select_features_by_attributes(attribute="railway", field="light_rail")
+        railway_line_rail = line.select_features_by_attributes(attribute="railway", field="rail")
+        railway_line_subway = line.select_features_by_attributes(attribute="railway", field="subway")
+
+        arcpy.edit.Snap(
+            in_features=self.select_features_by_attributes(attribute="station", field="light_rail"),
+            snap_environment=f"{railway_line_light_rail} EDGE '50 Meters';{railway_line_light_rail} VERTEX '50 Meters'"
+        )
+
+        railway_with_tram = self.select_features_by_attributes(attribute="station", field="None")
+        railway = self.select_features_by_attributes(selection_type="REMOVE_FROM_SELECTION", attribute="railway",
+                                                     field="tram_stop", in_view=railway_with_tram)
+        arcpy.edit.Snap(
+            in_features=railway,
+            snap_environment=f"{railway_line_rail} EDGE '50 Meters';{railway_line_rail} VERTEX '50 Meters'"
+        )
+        arcpy.edit.Snap(
+            in_features=self.select_features_by_attributes(attribute="station", field="subway"),
+            snap_environment=f"{railway_line_subway} EDGE '50 Meters';{railway_line_subway} VERTEX '50 Meters'"
+        )

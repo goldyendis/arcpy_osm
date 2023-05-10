@@ -1,6 +1,8 @@
 import glob
 import pathlib
 import re
+
+from processing.gdb import GDB
 from utils_arcpro.utils import base_project_location, shp_location, shp_files, project_file_location, coordinate_system
 import arcpy.management
 import arcpy.conversion
@@ -8,7 +10,7 @@ import arcpy.mp
 
 
 class GDBRefresh:
-    def __init__(self, gdb) -> None:
+    def __init__(self, gdb: GDB) -> None:
         self.project_location = base_project_location
         self.gdb = gdb
         self.shp_location = shp_location
@@ -44,7 +46,7 @@ class GDBRefresh:
         for layer in pro_map.listLayers():
             if layer.connectionProperties is not None:
                 if layer.connectionProperties["connection_info"][
-                        "database"] == fr'd:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230502.gdb':
+                        "database"] == fr'd:\Baga\egyeb\alapterkep_pyrosm\OSM_TO_MTSZ\Arcpro\20230503.gdb':
                     new_connection_properties = layer.connectionProperties
                     new_connection_properties["connection_info"][
                         "database"] = f"{self.project_location}\\{project_gdbs[0]}"
