@@ -161,7 +161,7 @@ class FeatureClassGeometry:
             selection_type=selection_type,
             invert_spatial_relationship=invert
         )
-
+    #TODO SNAP STATION TO MAIN USAGE LINE...
     def snap_railway_stations_to_line(self, line):
         railway_line_light_rail = line.select_features_by_attributes(attribute="railway", field="light_rail")
         railway_line_rail = line.select_features_by_attributes(attribute="railway", field="rail")
