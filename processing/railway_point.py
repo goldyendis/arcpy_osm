@@ -1,7 +1,3 @@
-from datetime import date
-
-from arcgis.geometry import arcpy
-
 from manipulation.feature_class_geometry import FeatureClassGeometry
 from processing.abstract.feature_process_abstract import AbstractFeatureClass
 from processing.railway_line import FeatureClassRailwayLine

@@ -238,3 +238,19 @@ class FeatureClassGeometry:
             search_radius="1 Meters",
             distance_field_name=""
         )
+
+    def spatial_join_waterway_angle(self):
+        arcpy.analysis.SpatialJoin(
+            target_features=self.name,
+            join_features=fr"{arcpy.env.workspace}\waterway_line_clipped_singlepart_dissolve",
+            out_feature_class=fr"{arcpy.env.workspace}\{self.name}_angle",
+            join_operation="JOIN_ONE_TO_ONE",
+            join_type="KEEP_ALL",
+            field_mapping='geom_type "geom_type" true true false 80 Text 0 0,First,#,waterway_point,geom_type,0,'
+                          '80;name "name" true true false 80 Text 0 0,First,#,waterway_point,name,0,80;waterway '
+                          '"waterway" true true false 80 Text 0 0,First,#,waterway_point,waterway,0,80;angle "angle" '
+                          'true true false 8 Double 0 0,First,#,waterway_line__PairwiseDisso_4,angle,-1,-1',
+            match_option="WITHIN_A_DISTANCE",
+            search_radius="2 Meters",
+            distance_field_name=""
+        )
