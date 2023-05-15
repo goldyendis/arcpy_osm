@@ -49,17 +49,17 @@ class FeatureClassWaterwayPoint(AbstractFeatureClass):
             expression="math.degrees(function(!SHAPE!))",
             code_block="""import math
         
-        def function(shape):
-        
-        
-            radian = math.atan2(shape.lastpoint.y - shape.firstpoint.y, 
-                                shape.lastpoint.x - shape.firstpoint.x)
-        
-            if (radian<0):
-                radian = (radian+math.pi)*(-1)+math.pi
-            else:
-                radian=(radian-math.pi)*(-1)+math.pi
-            return radian""",
+def function(shape):
+
+    
+    radian = math.atan2(shape.lastpoint.y - shape.firstpoint.y, 
+                        shape.lastpoint.x - shape.firstpoint.x)
+    
+    if (radian<0):
+        radian = (radian+math.pi)*(-1)+math.pi
+    else:
+        radian=(radian-math.pi)*(-1)+math.pi
+    return radian""",
             field_type="FLOAT",
         )
         self.fcgeometry.spatial_join_waterway_angle()
