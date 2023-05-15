@@ -145,11 +145,11 @@ class FeatureClassGeometry:
             )
 
     def select_features_by_attributes(self, attribute: str, field: str, selection_type: str = "NEW_SELECTION",
-                                      in_view: str = None):
+                                      invert ="NON_INVERT", in_view: str = None):
         return arcpy.management.SelectLayerByAttribute(
             in_layer_or_view=self.name if in_view is None else in_view,
             selection_type=selection_type,
-            where_clause=f"{attribute} = '{field}'"
+            where_clause=f"{attribute} = '{field}'",invert_where_clause=invert
         )
 
     def select_feature_by_locations(self, target, in_layer=None, selection_type="NEW_SELECTION", invert=True):

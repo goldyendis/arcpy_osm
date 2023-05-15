@@ -19,19 +19,8 @@ class FeatureClassWaterwayPoint(AbstractFeatureClass):
 
         waterway_points = self.fcgeometry.select_features_by_attributes(
             attribute="waterway",
-            field="lock_gate",
-        )
-        waterway_points = self.fcgeometry.select_features_by_attributes(
-            in_view=waterway_points,
-            attribute="waterway",
-            field="sluice_gate",
-            selection_type="ADD_TO_SELECTION"
-        )
-        waterway_points = self.fcgeometry.select_features_by_attributes(
-            in_view=waterway_points,
-            attribute="waterway",
-            field="waterfall",
-            selection_type="ADD_TO_SELECTION"
+            field="dock",
+            invert="INVERT",
         )
 
         self.fcgeometry.buffer(in_feature=waterway_points)
