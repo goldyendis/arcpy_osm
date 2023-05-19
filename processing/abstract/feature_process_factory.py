@@ -1,4 +1,5 @@
 from processing.barrier_point import FeatureClassBarrierPoint
+from processing.highway_line import FeatureClassHighwayLine
 from processing.highway_point import FeatureClassHighwayPoint
 from processing.landuse import FeatureClassLanduseArea
 from processing.man_made_point import FeatureClassManMadePoint
@@ -27,3 +28,6 @@ class FeatureProcessFactory:
         if feature == "waterway_point":
             print("WATERWAY_POINT")
             FeatureClassWaterwayPoint(feature = feature)
+        if feature == "highway_egyben_line":
+            print("HIGHWAY_EGYBEN_LINE")
+            FeatureClassHighwayLine(feature = feature)
