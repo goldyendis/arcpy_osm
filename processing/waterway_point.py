@@ -29,7 +29,7 @@ class FeatureClassWaterwayPoint(AbstractFeatureClass):
         waterway_line_fc.dissolve(in_feature=f"{waterway_line_fc.name}_clipped_singlepart", fields="name")
         waterway_line_fc.delete_features(in_view=waterway_line_fc.select_feature_by_locations(
             in_layer=f"{waterway_line_fc.name}_clipped_singlepart_dissolve",
-            target=waterway_points
+            target=waterway_points, distance="1 Meters"
         ))
 
         waterway_line_fc.calculate_field(

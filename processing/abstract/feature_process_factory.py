@@ -31,3 +31,6 @@ class FeatureProcessFactory:
         if feature == "highway_egyben_line":
             print("HIGHWAY_EGYBEN_LINE")
             FeatureClassHighwayLine(feature = feature)
+        if feature == "highway_line":
+            print("HIGHWAY_LINE")
+            FeatureClassHighwayLine(feature=feature)

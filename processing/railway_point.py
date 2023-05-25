@@ -18,7 +18,7 @@ class FeatureClassRailwayPoint(AbstractFeatureClass):
         railway_line_fc = FeatureClassGeometry(name=railway_line.name, geometry=railway_line.geometry)
         self.fcgeometry.snap_railway_stations_to_line(line=railway_line_fc)
         snaped_all_points = self.fcgeometry.select_feature_by_locations(
-            target=railway_line_fc.name, invert=False
+            target=railway_line_fc.name, invert=False, distance="1 Meters"
         )
         railway_points = self.fcgeometry.select_features_by_attributes(
             in_view=snaped_all_points,
@@ -34,7 +34,8 @@ class FeatureClassRailwayPoint(AbstractFeatureClass):
 
         self.fcgeometry.delete_features(in_view=self.fcgeometry.select_feature_by_locations(
             in_layer=f"{railway_line_fc.name}_clipped_singlepart_dissolve",
-            target=railway_points
+            target=railway_points,
+            distance="1 Meters",
         ))
         self.fcgeometry.delete_features(in_view=self.fcgeometry.select_features_by_attributes(
             in_view=f"{railway_line_fc.name}_clipped_singlepart_dissolve",
@@ -53,6 +54,7 @@ class FeatureClassRailwayPoint(AbstractFeatureClass):
             in_layer=railway_none_station,
             target=railway_narrow,
             invert=False,
+            distance="1 Meters"
         )
         self.fcgeometry.calculate_field(
             in_table=railway_narrow_gauge_stations,

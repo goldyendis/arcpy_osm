@@ -17,16 +17,16 @@ class FeatureClassGeometry:
         self.name = name
         self.geometry = geometry
 
-    def dissolve(self, in_feature,fields=None, multi_part: str = "SINGLE_PART", unsplit_lines: str="DISSOLVE_LINES"):
+    def dissolve(self, in_feature,fields=None, multi_part: str = "SINGLE_PART", unsplit_lines: str="DISSOLVE_LINES", diff_name:str = None):
         arcpy.management.Dissolve(
             in_features = in_feature,
             dissolve_field= fields,
             statistics_fields=None,
             multi_part=multi_part,
             unsplit_lines=unsplit_lines,
-            out_feature_class=fr"{arcpy.env.workspace}\{in_feature}_dissolve",)
+            out_feature_class=fr"{arcpy.env.workspace}\{in_feature}_dissolve" if diff_name is None else fr"{arcpy.env.workspace}\{diff_name}_dissolve",)
 
-        return fr"{arcpy.env.workspace}\{self.name}_dissolve"
+        return fr"{arcpy.env.workspace}\{self.name}_dissolve" if diff_name is None else fr"{arcpy.env.workspace}\{diff_name}_dissolve"
 
     def simplify_to_scale(self) -> None:
         """
@@ -152,12 +152,13 @@ class FeatureClassGeometry:
             where_clause=f"{attribute} = '{field}'",invert_where_clause=invert
         )
 
-    def select_feature_by_locations(self, target, in_layer=None, selection_type="NEW_SELECTION", invert=True):
+    def select_feature_by_locations(self, target, in_layer=None, selection_type="NEW_SELECTION", invert=True,
+                                    overlap_type: str = None, distance:str = None):
         return arcpy.management.SelectLayerByLocation(
             in_layer=self.name if in_layer is None else in_layer,
-            overlap_type="WITHIN_A_DISTANCE",
+            overlap_type=overlap_type if overlap_type is not None else "WITHIN_A_DISTANCE",
             select_features=target,
-            search_distance="1 Meters",
+            search_distance=distance,
             selection_type=selection_type,
             invert_spatial_relationship=invert
         )
@@ -185,7 +186,7 @@ class FeatureClassGeometry:
             in_features=self.select_features_by_attributes(attribute="station", field="subway"),
             snap_environment=f"{railway_line_subway} EDGE '50 Meters';{railway_line_subway} VERTEX '50 Meters'"
         )
-        railway_not_touch = self.select_feature_by_locations(in_layer="railway_point", target="railway_egyben_line")
+        railway_not_touch = self.select_feature_by_locations(in_layer="railway_point", target="railway_egyben_line", distance="1 Meters")
         railway_to_delete_one = self.select_features_by_attributes(
             attribute="station", field="funicular", in_view=railway_not_touch, selection_type="REMOVE_FROM_SELECTION")
         railway_to_delete_two = self.select_features_by_attributes(
@@ -253,4 +254,22 @@ class FeatureClassGeometry:
             match_option="WITHIN_A_DISTANCE",
             search_radius="2 Meters",
             distance_field_name=""
+        )
+
+    def split_line_at_vertices(self, in_feature: str = None):
+        return arcpy.management.SplitLine(
+            in_features=self.name if in_feature is None else in_feature,
+            out_feature_class=fr"{arcpy.env.workspace}\{self.name if in_feature is None else in_feature}_split_by_vertices"
+        )
+
+    def append_pedestrian(self, in_feature):
+        arcpy.management.Append(
+            inputs=in_feature,
+            target="highway_line",
+            schema_type="TEST",
+            field_mapping=None,
+            subtype="",
+            expression="highway = 'pedestrian'",
+            match_fields=None,
+            update_geometry="NOT_UPDATE_GEOMETRY"
         )
