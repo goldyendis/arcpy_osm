@@ -9,11 +9,7 @@ class FeatureClassRailwayPoint(AbstractFeatureClass):
         Concrete class to process Railway Point feature layer
         :param feature: str | The name of feature layer
         """
-        super().__init__()
-        self.name = feature
-        self.geometry = feature.split("_")[-1]
-        self.duplicate = f"{self.name}_1"
-        self.fcgeometry = FeatureClassGeometry(name=self.name, geometry=self.geometry)
+        super().__init__(feature=feature)
         railway_line = FeatureClassRailwayLine(feature="railway_egyben_line", helper=True)
         railway_line_fc = FeatureClassGeometry(name=railway_line.name, geometry=railway_line.geometry)
         self.fcgeometry.snap_railway_stations_to_line(line=railway_line_fc)

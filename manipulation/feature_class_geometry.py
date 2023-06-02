@@ -273,3 +273,15 @@ class FeatureClassGeometry:
             match_fields=None,
             update_geometry="NOT_UPDATE_GEOMETRY"
         )
+
+    def append(self, in_feature: str, target: str, exp_column: str, exp_value: str):
+        arcpy.management.Append(
+            inputs=in_feature,
+            target=target,
+            schema_type="TEST",
+            field_mapping=None,
+            subtype="",
+            expression=f"{exp_column} = '{exp_value}'",
+            match_fields=None,
+            update_geometry="NOT_UPDATE_GEOMETRY"
+        )

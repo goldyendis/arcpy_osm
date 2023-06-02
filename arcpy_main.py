@@ -19,7 +19,7 @@ def main():
         print(feature)
         FeatureProcessFactory.create_factory(feature)
     # gdb_refresh.remove_original_shps()
-    gdb_refresh.update_datasource()
+    # gdb_refresh.update_datasource()
 
 
 if __name__ == '__main__':

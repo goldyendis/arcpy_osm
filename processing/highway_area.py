@@ -8,11 +8,7 @@ class FeatureClassHighwayArea(AbstractFeatureClass):
         Concrete class to process Highway Line feature layer
         :param feature: str | The name of feature layer
         """
-        super().__init__()
-        self.name = feature
-        self.geometry = feature.split("_")[-1]
-        self.duplicate = f"{self.name}_1"
-        self.fcgeometry = FeatureClassGeometry(name=self.name, geometry=self.geometry)
+        super().__init__(feature=feature)
 
 
 

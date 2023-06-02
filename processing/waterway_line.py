@@ -8,9 +8,7 @@ class FeatureClassWaterwayLine(AbstractFeatureClass):
         Concrete class to process Waterway Line feature layer
         :param feature: str | The name of feature layer
         """
-        super().__init__()
-        self.name = feature
-        self.geometry = feature.split("_")[-1]
-        self.duplicate = f"{self.name}_1"
+        super().__init__(feature=feature)
+
         if not helper:
             print("WATERWAY LINE")

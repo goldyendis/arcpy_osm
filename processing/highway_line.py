@@ -9,11 +9,7 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
         Concrete class to process Highway Line feature layer
         :param feature: str | The name of feature layer
         """
-        super().__init__()
-        self.name = feature
-        self.geometry = feature.split("_")[-1]
-        self.duplicate = f"{self.name}_1"
-        self.fcgeometry = FeatureClassGeometry(name=self.name, geometry=self.geometry)
+        super().__init__(feature=feature)
 
         if self.name.find("egyben") > -1:
             delete_features = ["unclassified", "bridleway", "cycleway", "footway", "living_street", "path",
@@ -51,6 +47,3 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
             )
             self.fcgeometry.append_pedestrian(in_feature=pedestrian_line_split_dissolve)
 
-
-# TODO HIGHWAY rétegen semmi extra(még mindig lassúnak tűnik)
-# TODO HIGHWAY_egyben: Delete 144-en nem látszó elemeket. Dissolve
