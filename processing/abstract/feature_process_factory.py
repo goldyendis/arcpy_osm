@@ -11,9 +11,9 @@ from processing.waterway_point import FeatureClassWaterwayPoint
 class FeatureProcessFactory:
     @staticmethod
     def create_factory(feature):
-        if feature == "landuse_area":
-            print("LANDUSE AREA")
-            FeatureClassLanduseArea(feature = feature)
+        # if feature == "landuse_area":
+        #     print("LANDUSE AREA")
+        #     FeatureClassLanduseArea(feature = feature)
         if feature == "barrier_point":
             print("BARRIER_POINT")
             FeatureClassBarrierPoint(feature = feature)
@@ -39,5 +39,5 @@ class FeatureProcessFactory:
             print("RAILWAY_EGYBEN_LINE")
             FeatureClassRailwayLine(feature = feature)
         if feature == "railway_line":
-            print("HIGHWAY_LINE")
+            print("RAILWAY_LINE")
             FeatureClassRailwayLine(feature=feature)

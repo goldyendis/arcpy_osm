@@ -1,3 +1,5 @@
+import arcpy
+
 from manipulation.feature_class_geometry import FeatureClassGeometry
 from processing.abstract.feature_process_abstract import AbstractFeatureClass
 from processing.highway_area import FeatureClassHighwayArea
@@ -46,4 +48,27 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
                 diff_name="pedestrian_line"
             )
             self.fcgeometry.append_pedestrian(in_feature=pedestrian_line_split_dissolve)
+
+
+            self.fcgeometry.calculate_field(
+                    field="highway",
+                    expression="highway_level(!highway!,!bridge!,!tunnel!)",
+                    code_block="""def highway_level(highway,bridge,tunnel):
+                if bridge != 'None' and bridge != 'no':
+                    return highway+"_hid"
+                if tunnel != 'None' and tunnel != 'no':
+                    return highway+"_alagut"
+                else:
+                    return highway
+            """,
+                )
+            self.fcgeometry.export_highway_line_hid()
+            self.fcgeometry.delete_features(
+                in_view=self.fcgeometry.select_features_by_attributes(
+                    where_clause="""highway LIKE '%hid'""",
+                ))
+            self.fcgeometry.delete_fields(
+                input_feature=fr"{arcpy.env.workspace}\highway_line_hid",
+                delete_field=["tunnel","bridge"])
+
 

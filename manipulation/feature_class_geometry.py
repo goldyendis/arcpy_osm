@@ -144,12 +144,13 @@ class FeatureClassGeometry:
                 )
             )
 
-    def select_features_by_attributes(self, attribute: str, field: str, selection_type: str = "NEW_SELECTION",
-                                      invert ="NON_INVERT", in_view: str = None):
+    def select_features_by_attributes(self, attribute: str = None, field: str = None, selection_type: str = "NEW_SELECTION",
+                                      invert ="NON_INVERT", in_view: str = None, where_clause: str = None):
         return arcpy.management.SelectLayerByAttribute(
             in_layer_or_view=self.name if in_view is None else in_view,
             selection_type=selection_type,
-            where_clause=f"{attribute} = '{field}'",invert_where_clause=invert
+            where_clause=where_clause if where_clause is not None else f"{attribute} = '{field}'",
+            invert_where_clause=invert
         )
 
     def select_feature_by_locations(self, target, in_layer=None, selection_type="NEW_SELECTION", invert=True,
@@ -284,4 +285,27 @@ class FeatureClassGeometry:
             expression=f"{exp_column} = '{exp_value}'",
             match_fields=None,
             update_geometry="NOT_UPDATE_GEOMETRY"
+        )
+
+    def export_highway_line_hid(self):
+        arcpy.conversion.ExportFeatures(
+            in_features="highway_line",
+            out_features=fr"{arcpy.env.workspace}\highway_line_hid",
+            where_clause="""highway LIKE '%hid'""",
+            use_field_alias_as_name="NOT_USE_ALIAS",
+            field_mapping='geom_type "geom_type" true true false 80 Text 0 0,First,#,highway_line,geom_type,0,'
+                          '80;name "name" true true false 80 Text 0 0,First,#,highway_line,name,0,80;highway '
+                          '"highway" true true false 80 Text 0 0,First,#,highway_line,highway,0,80;bridge "bridge" '
+                          'true true false 80 Text 0 0,First,#,highway_line,bridge,0,80;tunnel "tunnel" true true '
+                          'false 80 Text 0 0,First,#,highway_line,tunnel,0,80;ref "ref" true true false 80 Text 0 0,'
+                          'First,#,highway_line,ref,0,80;Shape_Length "Shape_Length" false true true 8 Double 0 0,'
+                          'First,#,highway_line,Shape_Length,-1,-1',
+            sort_field=None
+        )
+
+    def delete_fields(self, delete_field: list[str], input_feature: str):
+        arcpy.management.DeleteField(
+            in_table=input_feature,
+            drop_field=delete_field,
+            method="DELETE_FIELDS"
         )

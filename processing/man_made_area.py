@@ -5,14 +5,10 @@ from processing.abstract.feature_process_abstract import AbstractFeatureClass
 class FeatureClassManMadeArea(AbstractFeatureClass):
     def __init__(self, feature: str, helper: bool = False) -> None:
         """
-        Concrete class to process Highway Line feature layer
+        Concrete class to process ManMadeArea feature layer
         :param feature: str | The name of feature layer
         """
-        super().__init__()
-        self.name = feature
-        self.geometry = feature.split("_")[-1]
-        self.duplicate = f"{self.name}_1"
-        self.fcgeometry = FeatureClassGeometry(name=self.name, geometry=self.geometry)
+        super().__init__(feature=feature)
 
 
 
