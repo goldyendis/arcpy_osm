@@ -3,7 +3,9 @@ import pathlib
 import re
 
 from processing.gdb import GDB
-from utils_arcpro.utils import base_project_location, shp_location, shp_files, project_file_location, coordinate_system
+from utils_arcpro.utils import base_project_location, shp_location, shp_files, project_file_location, \
+    coordinate_system, \
+    extra_features
 import arcpy.management
 import arcpy.conversion
 import arcpy.mp
@@ -18,6 +20,7 @@ class GDBRefresh:
         self.aprx = arcpy.mp.ArcGISProject(project_file_location)
         self.create_gdb()
         self.import_to_gdb()
+        self.import_extra_features_to_gdb()
 
     def create_gdb(self) -> None:
         arcpy.management.CreateFileGDB(
@@ -28,6 +31,12 @@ class GDBRefresh:
     def import_to_gdb(self) -> None:
         arcpy.conversion.FeatureClassToGeodatabase(
             Input_Features=[self.shp_location + "\\" + x for x in self.shp_files],
+            Output_Geodatabase=f"{self.project_location}\\{self.gdb.name}.gdb"
+        )
+
+    def import_extra_features_to_gdb(self):
+        arcpy.conversion.FeatureClassToGeodatabase(
+            Input_Features=[self.project_location + "\\" + x for x in extra_features],
             Output_Geodatabase=f"{self.project_location}\\{self.gdb.name}.gdb"
         )
 

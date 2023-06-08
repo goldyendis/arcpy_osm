@@ -1,5 +1,6 @@
 from manipulation.feature_class_geometry import FeatureClassGeometry
 from processing.abstract.feature_process_abstract import AbstractFeatureClass
+from processing.railway_area import FeatureClassRailwayArea
 
 
 class FeatureClassRailwayLine(AbstractFeatureClass):
@@ -59,6 +60,40 @@ class FeatureClassRailwayLine(AbstractFeatureClass):
                                     return railway
                             """,
                 )
+
+                platform_line = self.fcgeometry.select_features_by_attributes(
+                    attribute="railway", field="platform",
+                )
+                platform_line_split = self.fcgeometry.split_line_at_vertices(in_feature=platform_line)
+                self.fcgeometry.delete_features(attribute="railway", field="platform")
+                railway_area = FeatureClassRailwayArea(feature="railway_area", helper=True)
+                platform_area = railway_area.fcgeometry.select_features_by_attributes(
+                    attribute="railway", field="platform"
+                )
+                self.fcgeometry.delete_features(
+                    in_view=self.fcgeometry.select_feature_by_locations(
+                        in_layer=platform_line_split,
+                        overlap_type="WITHIN",
+                        target=platform_area,
+                        invert=False
+                    )
+                )
+                platform_line_split_dissolve = self.fcgeometry.dissolve(
+                    in_feature=platform_line_split,
+                    fields="geom_type;name;railway;bridge;tunnel;service;usage;station",
+                    diff_name="platform_line"
+                )
+                self.fcgeometry.append(
+                    in_feature=platform_line_split_dissolve,
+                    target="railway_line",
+                    exp_column="railway",
+                    exp_value="platform",
+                )
+                self.fcgeometry.export_railway_line_alagut()
+                self.fcgeometry.delete_features(
+                    in_view=self.fcgeometry.select_features_by_attributes(
+                        where_clause="""railway LIKE '%alagut'""",
+                    ))
 
                 self.fcgeometry.delete_fields(
                     input_feature=self.name,

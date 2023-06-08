@@ -17,14 +17,15 @@ class FeatureClassGeometry:
         self.name = name
         self.geometry = geometry
 
-    def dissolve(self, in_feature,fields=None, multi_part: str = "SINGLE_PART", unsplit_lines: str="DISSOLVE_LINES", diff_name:str = None):
+    def dissolve(self, in_feature, fields=None, multi_part: str = "SINGLE_PART", unsplit_lines: str = "DISSOLVE_LINES",
+                 diff_name: str = None):
         arcpy.management.Dissolve(
-            in_features = in_feature,
-            dissolve_field= fields,
+            in_features=in_feature,
+            dissolve_field=fields,
             statistics_fields=None,
             multi_part=multi_part,
             unsplit_lines=unsplit_lines,
-            out_feature_class=fr"{arcpy.env.workspace}\{in_feature}_dissolve" if diff_name is None else fr"{arcpy.env.workspace}\{diff_name}_dissolve",)
+            out_feature_class=fr"{arcpy.env.workspace}\{in_feature}_dissolve" if diff_name is None else fr"{arcpy.env.workspace}\{diff_name}_dissolve", )
 
         return fr"{arcpy.env.workspace}\{self.name}_dissolve" if diff_name is None else fr"{arcpy.env.workspace}\{diff_name}_dissolve"
 
@@ -130,8 +131,7 @@ class FeatureClassGeometry:
             '#,barrier_point_1,barrier,0,80',
             "INTERSECT", "5 Meters", '')
 
-
-    def delete_features(self, attribute: str= None, field: str= None, in_view=None):
+    def delete_features(self, attribute: str = None, field: str = None, in_view=None):
         if in_view is not None:
             arcpy.management.DeleteRows(
                 in_rows=in_view)
@@ -144,8 +144,9 @@ class FeatureClassGeometry:
                 )
             )
 
-    def select_features_by_attributes(self, attribute: str = None, field: str = None, selection_type: str = "NEW_SELECTION",
-                                      invert ="NON_INVERT", in_view: str = None, where_clause: str = None):
+    def select_features_by_attributes(self, attribute: str = None, field: str = None,
+                                      selection_type: str = "NEW_SELECTION",
+                                      invert="NON_INVERT", in_view: str = None, where_clause: str = None):
         return arcpy.management.SelectLayerByAttribute(
             in_layer_or_view=self.name if in_view is None else in_view,
             selection_type=selection_type,
@@ -154,7 +155,7 @@ class FeatureClassGeometry:
         )
 
     def select_feature_by_locations(self, target, in_layer=None, selection_type="NEW_SELECTION", invert=True,
-                                    overlap_type: str = None, distance:str = None):
+                                    overlap_type: str = None, distance: str = None):
         return arcpy.management.SelectLayerByLocation(
             in_layer=self.name if in_layer is None else in_layer,
             overlap_type=overlap_type if overlap_type is not None else "WITHIN_A_DISTANCE",
@@ -163,7 +164,8 @@ class FeatureClassGeometry:
             selection_type=selection_type,
             invert_spatial_relationship=invert
         )
-    #TODO SNAP STATION TO MAIN USAGE LINE...
+
+    # TODO SNAP STATION TO MAIN USAGE LINE...
     def snap_railway_stations_to_line(self, line):
         railway_line_light_rail = line.select_features_by_attributes(attribute="railway", field="light_rail")
         railway_line_rail = line.select_features_by_attributes(attribute="railway", field="rail")
@@ -187,7 +189,8 @@ class FeatureClassGeometry:
             in_features=self.select_features_by_attributes(attribute="station", field="subway"),
             snap_environment=f"{railway_line_subway} EDGE '50 Meters';{railway_line_subway} VERTEX '50 Meters'"
         )
-        railway_not_touch = self.select_feature_by_locations(in_layer="railway_point", target="railway_egyben_line", distance="1 Meters")
+        railway_not_touch = self.select_feature_by_locations(in_layer="railway_point", target="railway_egyben_line",
+                                                             distance="1 Meters")
         railway_to_delete_one = self.select_features_by_attributes(
             attribute="station", field="funicular", in_view=railway_not_touch, selection_type="REMOVE_FROM_SELECTION")
         railway_to_delete_two = self.select_features_by_attributes(
@@ -300,6 +303,19 @@ class FeatureClassGeometry:
                           'false 80 Text 0 0,First,#,highway_line,tunnel,0,80;ref "ref" true true false 80 Text 0 0,'
                           'First,#,highway_line,ref,0,80;Shape_Length "Shape_Length" false true true 8 Double 0 0,'
                           'First,#,highway_line,Shape_Length,-1,-1',
+            sort_field=None
+        )
+
+    def export_railway_line_alagut(self):
+        arcpy.conversion.ExportFeatures(
+            in_features="railway_line",
+            out_features=fr"{arcpy.env.workspace}railway_line_alagut",
+            where_clause="railway LIKE '%alagut'",
+            use_field_alias_as_name="NOT_USE_ALIAS",
+            field_mapping='geom_type "geom_type" true true false 80 Text 0 0,First,#,railway_line,geom_type,0,'
+                          '80;name "name" true true false 80 Text 0 0,First,#,railway_line,name,0,80;railway '
+                          '"railway" true true false 80 Text 0 0,First,#,railway_line,railway,0,80;Shape_Length '
+                          '"Shape_Length" false true true 8 Double 0 0,First,#,railway_line,Shape_Length,-1,-1',
             sort_field=None
         )
 
