@@ -263,7 +263,8 @@ class FeatureClassGeometry:
     def split_line_at_vertices(self, in_feature: str = None):
         return arcpy.management.SplitLine(
             in_features=self.name if in_feature is None else in_feature,
-            out_feature_class=fr"{arcpy.env.workspace}\{self.name if in_feature is None else in_feature}_split_by_vertices"
+            out_feature_class=fr"{arcpy.env.workspace}\
+            {self.name if in_feature is None else in_feature}_split"
         )
 
     def append_pedestrian(self, in_feature):

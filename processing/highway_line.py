@@ -29,7 +29,7 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
                 attribute="highway", field="pedestrian",
             )
             pedestrian_line_split = self.fcgeometry.split_line_at_vertices(in_feature=pedestrian_line)
-            self.fcgeometry.delete_features(attribute="highway",field="pedestrian")
+            self.fcgeometry.delete_features(attribute="highway", field="pedestrian")
             highway_area = FeatureClassHighwayArea(feature="highway_area", helper=True)
             pedestrian_area = highway_area.fcgeometry.select_features_by_attributes(
                 attribute="highway", field="pedestrian"
@@ -49,11 +49,10 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
             )
             self.fcgeometry.append_pedestrian(in_feature=pedestrian_line_split_dissolve)
 
-
             self.fcgeometry.calculate_field(
-                    field="highway",
-                    expression="highway_level(!highway!,!bridge!,!tunnel!)",
-                    code_block="""def highway_level(highway,bridge,tunnel):
+                field="highway",
+                expression="highway_level(!highway!,!bridge!,!tunnel!)",
+                code_block="""def highway_level(highway,bridge,tunnel):
                 if bridge != 'None' and bridge != 'no':
                     return highway+"_hid"
                 if tunnel != 'None' and tunnel != 'no':
@@ -61,7 +60,7 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
                 else:
                     return highway
             """,
-                )
+            )
             self.fcgeometry.export_highway_line_hid()
             self.fcgeometry.delete_features(
                 in_view=self.fcgeometry.select_features_by_attributes(
@@ -69,6 +68,4 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
                 ))
             self.fcgeometry.delete_fields(
                 input_feature=fr"{arcpy.env.workspace}\highway_line_hid",
-                delete_field=["tunnel","bridge"])
-
-
+                delete_field=["tunnel", "bridge"])

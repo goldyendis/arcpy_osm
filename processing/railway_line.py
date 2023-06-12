@@ -4,7 +4,7 @@ from processing.railway_area import FeatureClassRailwayArea
 
 
 class FeatureClassRailwayLine(AbstractFeatureClass):
-    def __init__(self, feature: str, helper:bool = False) -> None:
+    def __init__(self, feature: str, helper: bool = False) -> None:
         """
         Concrete class to process Railway Line feature layer
         :param feature: str | The name of feature layer
@@ -14,16 +14,16 @@ class FeatureClassRailwayLine(AbstractFeatureClass):
         if not helper:
             print("RAILWAY LINE")
             if self.name.find("egyben") > -1:
-                delete_features = ["funicular", "light_rail", "miniature", "narrow_gauge", "platform", "subway","tram"]
+                delete_features = ["funicular", "light_rail", "miniature", "narrow_gauge", "platform", "subway", "tram"]
                 for field in delete_features:
                     self.fcgeometry.delete_features(attribute="railway", field=field)
 
-                self.fcgeometry.delete_features(attribute="usage",field="tourism")
+                self.fcgeometry.delete_features(attribute="usage", field="tourism")
 
                 dissolve_feature = self.fcgeometry.dissolve(in_feature=self.name,
-                                         fields="railway;service;usage",
-                                         unsplit_lines="UNSPLIT_LINES",
-                                         )
+                                                            fields="railway;service;usage",
+                                                            unsplit_lines="UNSPLIT_LINES",
+                                                            )
                 self.fcgeometry.calculate_field(
                     in_table=dissolve_feature,
                     field="railway",
@@ -97,4 +97,4 @@ class FeatureClassRailwayLine(AbstractFeatureClass):
 
                 self.fcgeometry.delete_fields(
                     input_feature=self.name,
-                    delete_field=["service", "usage","station","bridge","tunnel"])
+                    delete_field=["service", "usage", "station", "bridge", "tunnel"])
