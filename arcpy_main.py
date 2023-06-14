@@ -6,7 +6,6 @@ import arcpy.conversion
 from processing.abstract.feature_process_factory import FeatureProcessFactory
 from processing.gdb import GDB
 from processing.gdb_refresh import GDBRefresh
-from utils_arcpro.utils import base_project_location
 
 
 def main():
@@ -19,7 +18,7 @@ def main():
         print(feature)
         FeatureProcessFactory.create_factory(feature)
     # gdb_refresh.remove_original_shps()
-    # gdb_refresh.update_datasource()
+    gdb_refresh.update_datasource()
 
 
 if __name__ == '__main__':

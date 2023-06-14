@@ -262,9 +262,8 @@ class FeatureClassGeometry:
 
     def split_line_at_vertices(self, in_feature: str = None):
         return arcpy.management.SplitLine(
-            in_features=self.name if in_feature is None else in_feature,
-            out_feature_class=fr"{arcpy.env.workspace}\
-            {self.name if in_feature is None else in_feature}_split"
+            in_features= in_feature,
+            out_feature_class=fr"{arcpy.env.workspace}\{in_feature}_split"
         )
 
     def append_pedestrian(self, in_feature):
@@ -279,14 +278,14 @@ class FeatureClassGeometry:
             update_geometry="NOT_UPDATE_GEOMETRY"
         )
 
-    def append(self, in_feature: str, target: str, exp_column: str, exp_value: str):
+    def append(self, in_feature: str, target: str, exp_column: str = None, exp_value: str = None, sql: str = None):
         arcpy.management.Append(
             inputs=in_feature,
             target=target,
             schema_type="TEST",
             field_mapping=None,
             subtype="",
-            expression=f"{exp_column} = '{exp_value}'",
+            expression=f"{exp_column} = '{exp_value}'" if sql is None else sql,
             match_fields=None,
             update_geometry="NOT_UPDATE_GEOMETRY"
         )
@@ -310,7 +309,7 @@ class FeatureClassGeometry:
     def export_railway_line_alagut(self):
         arcpy.conversion.ExportFeatures(
             in_features="railway_line",
-            out_features=fr"{arcpy.env.workspace}railway_line_alagut",
+            out_features=fr"{arcpy.env.workspace}\railway_line_alagut",
             where_clause="railway LIKE '%alagut'",
             use_field_alias_as_name="NOT_USE_ALIAS",
             field_mapping='geom_type "geom_type" true true false 80 Text 0 0,First,#,railway_line,geom_type,0,'
@@ -320,9 +319,17 @@ class FeatureClassGeometry:
             sort_field=None
         )
 
-    def delete_fields(self, delete_field: list[str], input_feature: str):
+    def delete_fields(self, delete_field: list[str], input_feature: str = None):
         arcpy.management.DeleteField(
-            in_table=input_feature,
+            in_table=self.name if input_feature is None else input_feature,
             drop_field=delete_field,
             method="DELETE_FIELDS"
+        )
+
+    def erase(self, erase, input_feature):
+        arcpy.analysis.Erase(
+            in_features=input_feature,
+            erase_features=erase,
+            out_feature_class=fr"{arcpy.env.workspace}\{self.name}_erase",
+            cluster_tolerance=None
         )

@@ -9,7 +9,7 @@ class FeatureClassManMadeLine(AbstractFeatureClass):
              Concrete class to process Man_Made Line feature layer
              :param feature: str | The name of feature layer
              """
-        super().__init__(feature = feature)
+        super().__init__(feature=feature)
 
         pier_line = self.fcgeometry.select_features_by_attributes(
             attribute="man_made", field="pier",

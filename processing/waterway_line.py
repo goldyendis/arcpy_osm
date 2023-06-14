@@ -12,25 +12,24 @@ class FeatureClassWaterwayLine(AbstractFeatureClass):
 
         if not helper:
             print("WATERWAY LINE")
-            waterway_line = self.fcgeometry.select_features_by_attributes(
+            self.fcgeometry.delete_features(in_view=self.fcgeometry.select_features_by_attributes(
                 where_clause="waterway IN ('canal','ditch','drain','river','stream')",
-            )
-            waterway_line_split = self.fcgeometry.split_line_at_vertices(in_feature=waterway_line)
-            self.fcgeometry.delete_features(in_view=waterway_line)
-            water_area = FeatureClassWaterArea(feature="water_area", helper=True)
-            self.fcgeometry.delete_features(
-                in_view=self.fcgeometry.select_feature_by_locations(
-                    in_layer=waterway_line_split,
-                    overlap_type="WITHIN",
-                    target=water_area,
-                    invert=False,
-                )
+            ))
+            self.fcgeometry.erase(
+                input_feature=self.fcgeometry.select_features_by_attributes(
+                    where_clause="waterway IN ('canal','ditch','drain','river','stream')",
+                ),
+                erase = "water_area",
             )
             waterway_line_split_dissolve = self.fcgeometry.dissolve(
-                in_feature=waterway_line_split,
+                in_feature=f"{self.name}_erase",
                 fields="name;waterway;tunnel",
                 diff_name="waterway_diff_dissolve_line"
             )
-            self.fcgeometry.append_pedestrian(
-                in_feature=waterway_line_split_dissolve
+            self.fcgeometry.delete_fields(input_feature=self.name, delete_field=["geom_type",])
+
+            self.fcgeometry.append(
+                in_feature=waterway_line_split_dissolve,
+                sql="waterway in ('canal','ditch','drain','river','stream')",
+                target="waterway_line"
             )

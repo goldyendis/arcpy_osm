@@ -54,9 +54,10 @@ class GDBRefresh:
         # TODO két IF-et kivenni a véglegesben, más réteg ne legyen a Proban,csak amihez van a gdb-ben is feature
         for layer in pro_map.listLayers():
             new_connection_properties = layer.connectionProperties
-            new_connection_properties["connection_info"][
-                "database"] = f"{self.project_location}\\{project_gdbs[0]}"
-            layer.updateConnectionProperties(layer.connectionProperties, new_connection_properties)
-            print(layer.connectionProperties)
+            if new_connection_properties["connection_info"]["database"] is not None:
+                new_connection_properties["connection_info"]["database"] = \
+                    fr"{self.project_location}\{project_gdbs[0]}"
+                layer.updateConnectionProperties(layer.connectionProperties, new_connection_properties)
+                print(layer.connectionProperties)
 
         self.aprx.save()
