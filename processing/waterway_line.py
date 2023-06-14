@@ -12,15 +12,16 @@ class FeatureClassWaterwayLine(AbstractFeatureClass):
 
         if not helper:
             print("WATERWAY LINE")
-            self.fcgeometry.delete_features(in_view=self.fcgeometry.select_features_by_attributes(
-                where_clause="waterway IN ('canal','ditch','drain','river','stream')",
-            ))
+
             self.fcgeometry.erase(
                 input_feature=self.fcgeometry.select_features_by_attributes(
                     where_clause="waterway IN ('canal','ditch','drain','river','stream')",
                 ),
                 erase = "water_area",
             )
+            self.fcgeometry.delete_features(in_view=self.fcgeometry.select_features_by_attributes(
+                where_clause="waterway IN ('canal','ditch','drain','river','stream')",
+            ))
             waterway_line_split_dissolve = self.fcgeometry.dissolve(
                 in_feature=f"{self.name}_erase",
                 fields="name;waterway;tunnel",
