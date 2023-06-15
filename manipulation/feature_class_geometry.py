@@ -333,3 +333,13 @@ class FeatureClassGeometry:
             out_feature_class=fr"{arcpy.env.workspace}\{self.name}_erase",
             cluster_tolerance=None
         )
+
+    def dissolve_boundaries(self, input_feature: str, fields: list[str]):
+        arcpy.gapro.DissolveBoundaries(
+            input_layer=input_feature,
+            out_feature_class=fr"{arcpy.env.workspace}\{input_feature}_dissolve",
+            multipart="SINGLE_PART",
+            dissolve_fields="DISSOLVE_FIELDS",
+            fields=fields,
+            summary_fields=None
+        )
