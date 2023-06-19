@@ -29,7 +29,7 @@ class FeatureClassGeometry:
 
         return fr"{arcpy.env.workspace}\{self.name}_dissolve" if diff_name is None else fr"{arcpy.env.workspace}\{diff_name}_dissolve"
 
-    def simplify_to_scale(self) -> None:
+    def simplify_to_scale(self, input_feature: str = None) -> None:
         """
         create multiple Simplified feature classes and calculate Area/Length of features
         1 : 2 300 000 -- 1 : 1 155 000 -->> Simplify_1
@@ -40,7 +40,7 @@ class FeatureClassGeometry:
             if self.geometry == "area":
                 print(f"{self.name}_simplify_{i}")
                 arcpy.cartography.SimplifyPolygon(
-                    fr"{arcpy.env.workspace}\{self.name}",
+                    fr"{arcpy.env.workspace}\{self.name}" if input_feature is None else input_feature,
                     fr"{arcpy.env.workspace}\{self.name}_simplify_{i}",
                     *Simplify().get_simplify_properties(str(i), geometry=self.geometry)
                 )
@@ -67,13 +67,13 @@ class FeatureClassGeometry:
             code_block=code_block, field_type=field_type
         )
 
-    def copy_feature_layer(self, out_name: str) -> None:
+    def copy_feature_layer(self, out_name: str, input_feature:str =None) -> None:
         """
         Copies a feature class into the GDB, with suffix "_1" name
         :param: str | name of the output feature
         """
         arcpy.management.CopyFeatures(
-            in_features=self.name,
+            in_features=self.name if input_feature is None else input_feature,
             out_feature_class=fr"{arcpy.env.workspace}\{out_name}")
 
     def integrate(self, distance: int, layer: str = None) -> None:

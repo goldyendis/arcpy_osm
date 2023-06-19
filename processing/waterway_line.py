@@ -1,5 +1,4 @@
 from processing.abstract.feature_process_abstract import AbstractFeatureClass
-from processing.water_area import FeatureClassWaterArea
 
 
 class FeatureClassWaterwayLine(AbstractFeatureClass):

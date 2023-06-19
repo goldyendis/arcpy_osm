@@ -13,6 +13,6 @@ class FeatureClassLanduseArea(AbstractFeatureClass):
         self.fcgeometry.calculate_area()
         self.fcgeometry.dissolve_boundaries(
             input_feature = "landuse_area_simplify_3",
-            fields="landuse"
+            fields=["landuse","name"]
 
         )

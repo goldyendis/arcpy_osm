@@ -5,6 +5,7 @@ from processing.man_made_line import FeatureClassManMadeLine
 from processing.man_made_point import FeatureClassManMadePoint
 from processing.railway_line import FeatureClassRailwayLine
 from processing.railway_point import FeatureClassRailwayPoint
+from processing.water_area import FeatureClassWaterArea
 from processing.waterway_line import FeatureClassWaterwayLine
 from processing.waterway_point import FeatureClassWaterwayPoint
 
@@ -45,3 +46,6 @@ class FeatureProcessFactory:
         if feature == "waterway_line":
             print("WATERWAY_LINE")
             FeatureClassWaterwayLine(feature=feature)
+        if feature == "water_area":
+            print("WATER_AREA")
+            FeatureClassWaterArea(feature=feature)

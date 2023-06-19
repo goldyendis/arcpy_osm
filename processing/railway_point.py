@@ -2,7 +2,7 @@ from manipulation.feature_class_geometry import FeatureClassGeometry
 from processing.abstract.feature_process_abstract import AbstractFeatureClass
 from processing.railway_line import FeatureClassRailwayLine
 
-
+#TODO HEV allomas nem snappelt és forgatot
 class FeatureClassRailwayPoint(AbstractFeatureClass):
     def __init__(self, feature: str) -> None:
         """
