@@ -15,6 +15,7 @@ class FeatureClassWaterArea(AbstractFeatureClass):
             self.fcgeometry.dissolve(
                 in_feature=self.name,
                 unsplit_lines="UNSPLIT_LINES",
+                fields="name"
             )
             self.fcgeometry.simplify_to_scale(input_feature="water_area_dissolve")
             self.fcgeometry.calculate_area()
