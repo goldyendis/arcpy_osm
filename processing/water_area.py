@@ -1,4 +1,3 @@
-from manipulation.feature_class_geometry import FeatureClassGeometry
 from processing.abstract.feature_process_abstract import AbstractFeatureClass
 from processing.waterway_line import FeatureClassWaterwayLine
 
@@ -36,12 +35,3 @@ class FeatureClassWaterArea(AbstractFeatureClass):
 
 
 
-
-# arcpy.management.SelectLayerByLocation(
-#     in_layer="water_area",
-#     overlap_type="BOUNDARY_TOUCHES",
-#     select_features="waterway_line",
-#     search_distance="10 Meters",
-#     selection_type="NEW_SELECTION",
-#     invert_spatial_relationship="NOT_INVERT"
-# )

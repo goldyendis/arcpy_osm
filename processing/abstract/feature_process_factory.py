@@ -1,4 +1,5 @@
 from processing.barrier_point import FeatureClassBarrierPoint
+from processing.building_area import FeatureClassBuildingArea
 from processing.highway_line import FeatureClassHighwayLine
 from processing.landuse import FeatureClassLanduseArea
 from processing.man_made_line import FeatureClassManMadeLine
@@ -13,6 +14,7 @@ from processing.waterway_point import FeatureClassWaterwayPoint
 class FeatureProcessFactory:
     @staticmethod
     def create_factory(feature):
+        name_parts = feature.split("_")
         if feature == "landuse_area":
             print("LANDUSE AREA")
             FeatureClassLanduseArea(feature = feature)
@@ -49,3 +51,7 @@ class FeatureProcessFactory:
         if feature == "water_area":
             print("WATER_AREA")
             FeatureClassWaterArea(feature=feature)
+        if len(name_parts) == 3 and name_parts[0] == "building" and name_parts[2] == "area":
+            print("_".join(name_parts))
+            FeatureClassBuildingArea(feature=feature)
+

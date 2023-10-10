@@ -9,6 +9,7 @@ from utils_arcpro.utils import base_project_location, shp_location, shp_files, p
 import arcpy.management
 import arcpy.conversion
 import arcpy.mp
+import arcpy.da
 
 
 class GDBRefresh:
@@ -29,9 +30,15 @@ class GDBRefresh:
         )
 
     def import_to_gdb(self) -> None:
+        out_gdb = f"{self.project_location}\\{self.gdb.name}.gdb"
         arcpy.conversion.FeatureClassToGeodatabase(
             Input_Features=[self.shp_location + "\\" + x for x in self.shp_files],
-            Output_Geodatabase=f"{self.project_location}\\{self.gdb.name}.gdb"
+            Output_Geodatabase=out_gdb
+        )
+        arcpy.CreateFeatureclass_management(
+            out_path=out_gdb,
+            out_name="building_area",
+            geometry_type="POLYGON"
         )
 
     def import_extra_features_to_gdb(self):
@@ -53,11 +60,25 @@ class GDBRefresh:
 
         # TODO két IF-et kivenni a véglegesben, más réteg ne legyen a Proban,csak amihez van a gdb-ben is feature
         for layer in pro_map.listLayers():
-            new_connection_properties = layer.connectionProperties
-            if new_connection_properties["connection_info"]["database"] is not None:
-                new_connection_properties["connection_info"]["database"] = \
-                    fr"{self.project_location}\{project_gdbs[0]}"
-                layer.updateConnectionProperties(layer.connectionProperties, new_connection_properties)
-                print(layer.connectionProperties)
+            if layer.name != "fonts":
+                new_connection_properties = layer.connectionProperties
+                if new_connection_properties["connection_info"]["database"] is not None:
+                    new_connection_properties["connection_info"]["database"] = \
+                        fr"{self.project_location}\{project_gdbs[0]}"
+                    layer.updateConnectionProperties(layer.connectionProperties, new_connection_properties)
+                    print(layer.connectionProperties)
+
+    def change_name_to_nulla(self):
+        for pro_map in self.aprx.listMaps()[0]:
+            for layer in pro_map.listLayers():
+                arcpy.management.CalculateField(
+                    in_table= layer,
+                    field="name",
+                    expression="change_name(!name!)",
+                    code_block="""def change_name(name):
+                                      if name == "None":
+                                          return "nulla" """
+                )
+                arcpy.management.SelectLayerByAttribute(layer, "CLEAR_SELECTION")
 
         self.aprx.save()
