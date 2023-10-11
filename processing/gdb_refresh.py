@@ -21,7 +21,7 @@ class GDBRefresh:
         self.aprx = arcpy.mp.ArcGISProject(project_file_location)
         self.create_gdb()
         self.import_to_gdb()
-        self.import_extra_features_to_gdb()
+        # self.import_extra_features_to_gdb()
 
     def create_gdb(self) -> None:
         arcpy.management.CreateFileGDB(
@@ -69,16 +69,16 @@ class GDBRefresh:
                     print(layer.connectionProperties)
 
     def change_name_to_nulla(self):
-        for pro_map in self.aprx.listMaps()[0]:
-            for layer in pro_map.listLayers():
-                arcpy.management.CalculateField(
-                    in_table= layer,
-                    field="name",
-                    expression="change_name(!name!)",
-                    code_block="""def change_name(name):
-                                      if name == "None":
-                                          return "nulla" """
-                )
-                arcpy.management.SelectLayerByAttribute(layer, "CLEAR_SELECTION")
+        pro_map = self.aprx.listMaps()[0]
+        for layer in pro_map.listLayers():
+            arcpy.management.CalculateField(
+                in_table= layer,
+                field="name",
+                expression="change_name(!name!)",
+                code_block="""def change_name(name):
+                                  if name == "None":
+                                      return "nulla" """
+            )
+            arcpy.management.SelectLayerByAttribute(layer, "CLEAR_SELECTION")
 
         self.aprx.save()

@@ -18,8 +18,8 @@ def main():
         print(feature)
         FeatureProcessFactory.create_factory(feature)
     # gdb_refresh.remove_original_shps()
-    gdb_refresh.update_datasource()
-    gdb_refresh.change_name_to_nulla()
+    # gdb_refresh.update_datasource()
+    # gdb_refresh.change_name_to_nulla()
 
 
 if __name__ == '__main__':

@@ -4,17 +4,6 @@ class Schemes:
                    577: 2000000,
                    288: 350000,
                    }
-    #TODO Amenity: semmi egyéb
-    #TODO Barrier: semmi egyéb
-    #TODO Boundary: semmi egyéb
-    #TODO Building: semmi egyéb
-    #TODO Highway: semmi egyéb
-    #TODO Leisure: semmi egyéb
-    #TODO Man_made: semmi egyéb
-    #TODO military: semmi egyéb
-    #TODO natural: TALÁN semmi egyéb
-    #TODO public_transport: semmi egyéb
-
 
     landuse_area_dissolve = [["name", "landuse", "scale"], "", "SINGLE_PART", "DISSOLVE_LINES"]
     water_area_dissolve = [["name","water", "scale"], "", "SINGLE_PART", "DISSOLVE_LINES"]
@@ -89,7 +78,6 @@ class Schemes:
 
     }
 
-#TODO: Utak és vasutak egyszerűsítése méretarányonként pl az elején nem kell a bridge és a tunnel,simplify 5
 
 
     railway_line_dissolve = {

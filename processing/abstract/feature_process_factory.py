@@ -4,6 +4,7 @@ from processing.highway_line import FeatureClassHighwayLine
 from processing.landuse import FeatureClassLanduseArea
 from processing.man_made_line import FeatureClassManMadeLine
 from processing.man_made_point import FeatureClassManMadePoint
+from processing.place_point import FeatureClassPlacePoint
 from processing.railway_line import FeatureClassRailwayLine
 from processing.railway_point import FeatureClassRailwayPoint
 from processing.water_area import FeatureClassWaterArea
@@ -39,9 +40,9 @@ class FeatureProcessFactory:
         if feature == "man_made_line":
             print("MAN_MADE_LINE")
             FeatureClassManMadeLine(feature=feature)
-        if feature == "railway_egyben_line":
-            print("RAILWAY_EGYBEN_LINE")
-            FeatureClassRailwayLine(feature = feature)
+        # if feature == "railway_egyben_line":
+        #     print("RAILWAY_EGYBEN_LINE")
+        #     FeatureClassRailwayLine(feature = feature)
         if feature == "railway_line":
             print("RAILWAY_LINE")
             FeatureClassRailwayLine(feature=feature)
@@ -54,4 +55,9 @@ class FeatureProcessFactory:
         if len(name_parts) == 3 and name_parts[0] == "building" and name_parts[2] == "area":
             print("_".join(name_parts))
             FeatureClassBuildingArea(feature=feature)
+        if feature == "place_point":
+            print("PLACE_POINT")
+            FeatureClassPlacePoint(feature=feature)
+
+
 

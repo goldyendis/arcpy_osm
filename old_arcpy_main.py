@@ -76,7 +76,6 @@ class MainMethod:
                                 fr"{arcpy.env.workspace}\{shp_file_name}_temp\{shp_file_name}_szuk_dissolve",
                                 fr"{arcpy.env.workspace}\{shp_file_name}_temp\{shp_file_name}_{scale}",
                                 f"scale>={scale}")
-                            # TODO Merge fields
                         else:
                             arcpy.Select_analysis(
                                 fr"{arcpy.env.workspace}\{shp_file_name}_temp\{shp_file_name}_bo_dissolve",
