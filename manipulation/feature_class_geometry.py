@@ -67,7 +67,7 @@ class FeatureClassGeometry:
             code_block=code_block, field_type=field_type
         )
 
-    def copy_feature_layer(self, out_name: str, input_feature:str =None) -> None:
+    def copy_feature_layer(self, out_name: str, input_feature: str = None) -> None:
         """
         Copies a feature class into the GDB, with suffix "_1" name
         :param: str | name of the output feature
@@ -290,20 +290,23 @@ class FeatureClassGeometry:
             update_geometry="NOT_UPDATE_GEOMETRY"
         )
 
-    def export_highway_line_hid(self, in_feature: str):
-        arcpy.conversion.ExportFeatures(
-            in_features=in_feature,
-            out_features=fr"{arcpy.env.workspace}\highway_line_hid",
-            where_clause="""highway LIKE '%hid'""",
-            use_field_alias_as_name="NOT_USE_ALIAS",
-            field_mapping='geom_type "geom_type" true true false 80 Text 0 0,First,#,highway_line,geom_type,0,'
-                          '80;name "name" true true false 80 Text 0 0,First,#,highway_line,name,0,80;highway '
-                          '"highway" true true false 80 Text 0 0,First,#,highway_line,highway,0,80;bridge "bridge" '
-                          'true true false 80 Text 0 0,First,#,highway_line,bridge,0,80;tunnel "tunnel" true true '
-                          'false 80 Text 0 0,First,#,highway_line,tunnel,0,80;ref "ref" true true false 80 Text 0 0,'
-                          'First,#,highway_line,ref,0,80;Shape_Length "Shape_Length" false true true 8 Double 0 0,'
-                          'First,#,highway_line,Shape_Length,-1,-1',
-            sort_field=None
+    def append_highway_line_hid(self, in_feature: str):
+        arcpy.management.Append(
+            inputs=in_feature,
+            target=fr"{arcpy.env.workspace}\highway_line_hid",
+            schema_type="NO_TEST",
+            expression="""highway LIKE '%hid'""",
+            subtype="",
+            field_mapping="",
+            # field_mapping='geom_type "geom_type" true true false 80 Text 0 0,First,#,highway_line,geom_type,0,'
+            #               '80;name "name" true true false 80 Text 0 0,First,#,highway_line,name,0,80;highway '
+            #               '"highway" true true false 80 Text 0 0,First,#,highway_line,highway,0,80;bridge "bridge" '
+            #               'true true false 80 Text 0 0,First,#,highway_line,bridge,0,80;tunnel "tunnel" true true '
+            #               'false 80 Text 0 0,First,#,highway_line,tunnel,0,80;ref "ref" true true false 80 Text 0 0,'
+            #               'First,#,highway_line,ref,0,80;Shape_Length "Shape_Length" false true true 8 Double 0 0,'
+            #               'First,#,highway_line,Shape_Length,-1,-1',
+            match_fields=None,
+            update_geometry="NOT_UPDATE_GEOMETRY"
         )
 
     def export_railway_line_alagut(self):

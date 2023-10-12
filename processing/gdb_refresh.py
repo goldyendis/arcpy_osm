@@ -50,6 +50,11 @@ class GDBRefresh:
             out_name="highway_egyben_line",
             geometry_type="POLYLINE"
         )
+        arcpy.CreateFeatureclass_management(
+            out_path=out_gdb,
+            out_name="highway_line_hid",
+            geometry_type="POLYLINE"
+        )
 
     def import_extra_features_to_gdb(self):
         arcpy.conversion.FeatureClassToGeodatabase(

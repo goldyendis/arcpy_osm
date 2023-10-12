@@ -72,7 +72,7 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
                     return highway
             """,
             )
-            self.fcgeometry.export_highway_line_hid(in_feature=self.name)
+            self.fcgeometry.append_highway_line_hid(in_feature=self.name)
             self.fcgeometry.delete_features(
                 in_view=self.fcgeometry.select_features_by_attributes(
                     where_clause="""highway LIKE '%hid'""",
