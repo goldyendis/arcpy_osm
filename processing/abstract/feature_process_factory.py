@@ -31,12 +31,6 @@ class FeatureProcessFactory:
         if feature == "waterway_point":
             print("WATERWAY_POINT")
             FeatureClassWaterwayPoint(feature = feature)
-        if feature == "highway_egyben_line":
-            print("HIGHWAY_EGYBEN_LINE")
-            FeatureClassHighwayLine(feature = feature)
-        if feature == "highway_line":
-            print("HIGHWAY_LINE")
-            FeatureClassHighwayLine(feature=feature)
         if feature == "man_made_line":
             print("MAN_MADE_LINE")
             FeatureClassManMadeLine(feature=feature)
@@ -55,6 +49,12 @@ class FeatureProcessFactory:
         if len(name_parts) == 3 and name_parts[0] == "building" and name_parts[2] == "area":
             print("_".join(name_parts))
             FeatureClassBuildingArea(feature=feature)
+        if len(name_parts) == 4 and name_parts[0] == "highway" and name_parts[1] == "egyben":
+            print("HIGHWAY_EGYBEN_LINE")
+            FeatureClassHighwayLine(feature = feature)
+        if len(name_parts) == 3 and name_parts[0] == "highway" and name_parts[2] == "line" and name_parts[1] != "egyben":
+            print("HIGHWAY_LINE")
+            FeatureClassHighwayLine(feature=feature)
         if feature == "place_point":
             print("PLACE_POINT")
             FeatureClassPlacePoint(feature=feature)

@@ -1,6 +1,5 @@
 import arcpy
 import arcpy.management
-from manipulation.feature_class_geometry import FeatureClassGeometry
 from processing.abstract.feature_process_abstract import AbstractFeatureClass
 
 

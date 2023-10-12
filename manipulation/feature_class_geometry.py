@@ -290,9 +290,9 @@ class FeatureClassGeometry:
             update_geometry="NOT_UPDATE_GEOMETRY"
         )
 
-    def export_highway_line_hid(self):
+    def export_highway_line_hid(self, in_feature: str):
         arcpy.conversion.ExportFeatures(
-            in_features="highway_line",
+            in_features=in_feature,
             out_features=fr"{arcpy.env.workspace}\highway_line_hid",
             where_clause="""highway LIKE '%hid'""",
             use_field_alias_as_name="NOT_USE_ALIAS",

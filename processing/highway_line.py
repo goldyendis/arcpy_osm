@@ -1,6 +1,6 @@
 import arcpy
+import arcpy.management
 
-from manipulation.feature_class_geometry import FeatureClassGeometry
 from processing.abstract.feature_process_abstract import AbstractFeatureClass
 from processing.highway_area import FeatureClassHighwayArea
 
@@ -23,6 +23,17 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
             self.fcgeometry.dissolve(in_feature=self.name,
                                      fields="highway;ref",
                                      multi_part="MULTI_PART")
+
+            arcpy.management.Append(
+                inputs=self.name,
+                target="highway_egyben_line",
+                schema_type="NO_TEST",
+                field_mapping="",
+                subtype="",
+                expression="",
+                match_fields=None,
+                update_geometry="NOT_UPDATE_GEOMETRY"
+            )
 
         else:
             pedestrian_line = self.fcgeometry.select_features_by_attributes(
@@ -61,7 +72,7 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
                     return highway
             """,
             )
-            self.fcgeometry.export_highway_line_hid()
+            self.fcgeometry.export_highway_line_hid(in_feature=self.name)
             self.fcgeometry.delete_features(
                 in_view=self.fcgeometry.select_features_by_attributes(
                     where_clause="""highway LIKE '%hid'""",
@@ -69,3 +80,14 @@ class FeatureClassHighwayLine(AbstractFeatureClass):
             self.fcgeometry.delete_fields(
                 input_feature=fr"{arcpy.env.workspace}\highway_line_hid",
                 delete_field=["tunnel", "bridge"])
+
+            arcpy.management.Append(
+                inputs=self.name,
+                target="highway_line",
+                schema_type="NO_TEST",
+                field_mapping="",
+                subtype="",
+                expression="",
+                match_fields=None,
+                update_geometry="NOT_UPDATE_GEOMETRY"
+            )

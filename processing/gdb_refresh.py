@@ -21,7 +21,7 @@ class GDBRefresh:
         self.aprx = arcpy.mp.ArcGISProject(project_file_location)
         self.create_gdb()
         self.import_to_gdb()
-        # self.import_extra_features_to_gdb()
+        self.import_extra_features_to_gdb()
 
     def create_gdb(self) -> None:
         arcpy.management.CreateFileGDB(
@@ -39,6 +39,16 @@ class GDBRefresh:
             out_path=out_gdb,
             out_name="building_area",
             geometry_type="POLYGON"
+        )
+        arcpy.CreateFeatureclass_management(
+            out_path=out_gdb,
+            out_name="highway_line",
+            geometry_type="POLYLINE"
+        )
+        arcpy.CreateFeatureclass_management(
+            out_path=out_gdb,
+            out_name="highway_egyben_line",
+            geometry_type="POLYLINE"
         )
 
     def import_extra_features_to_gdb(self):
