@@ -2,6 +2,11 @@ from abc import ABC
 
 from manipulation.feature_class_geometry import FeatureClassGeometry
 
+# from enum import Enum
+#
+# class FeatureEnum(Enum):
+#     LANDUSE_AREA = "landuse_area"
+#
 
 class AbstractFeatureClass(ABC):
     def __init__(self, feature: str) -> None:

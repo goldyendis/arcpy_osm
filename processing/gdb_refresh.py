@@ -73,7 +73,6 @@ class GDBRefresh:
                         re.match("^\d{8}", pathlib.Path(i).name) is not None]
         project_gdbs.sort(reverse=True)
 
-        # TODO két IF-et kivenni a véglegesben, más réteg ne legyen a Proban,csak amihez van a gdb-ben is feature
         for layer in pro_map.listLayers():
             if layer.name != "fonts":
                 new_connection_properties = layer.connectionProperties
