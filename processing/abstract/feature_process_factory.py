@@ -51,10 +51,7 @@ class FeatureProcessFactory:
         if len(name_parts) == 3 and name_parts[0] == "building" and name_parts[2] == "area":
             print("_".join(name_parts))
             FeatureClassBuildingArea(feature=feature)
-        if len(name_parts) == 4 and name_parts[0] == "highway" and name_parts[1] == "egyben":
-            print("HIGHWAY_EGYBEN_LINE")
-            FeatureClassHighwayLine(feature = feature)
-        if len(name_parts) == 3 and name_parts[0] == "highway" and name_parts[2] == "line" and name_parts[1] != "egyben":
+        if name_parts[0] == "highway" and name_parts[-1] == "line" and feature != "highway_line" and feature != "highway_egyben_line":
             print("HIGHWAY_LINE")
             FeatureClassHighwayLine(feature=feature)
         if feature == "place_point":

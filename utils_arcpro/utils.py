@@ -24,5 +24,5 @@ coordinate_system = '''PROJCS["WGS_1984_Web_Mercator_Auxiliary_Sphere",
                         UNIT["Meter",1.0]],
                         '-20037700 -30241100 10000;#;#;0.001;#;#;IsHighPrecision'
                         '''
-# extra_features = ["kistajak.shp","kozeptajak.shp","nagytajak.shp","country_border.shp"]
-extra_features = ["country_border.shp"]
+# extra_features = ["kistajak.shp","kozeptajak.shp","nagytajak.shp","country_border.shp","fonts.shp"]
+extra_features = ["country_border.shp", "fonts.shp"]

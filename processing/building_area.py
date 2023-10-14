@@ -10,7 +10,8 @@ class FeatureClassBuildingArea(AbstractFeatureClass):
         :param feature: str | The name of feature layer
         """
         super().__init__(feature=feature)
-        self.append_to_building_area()
+        if self.name != "building_area":
+            self.append_to_building_area()
 
     def append_to_building_area(self) -> None:
         """
@@ -46,11 +47,11 @@ class FeatureClassBuildingArea(AbstractFeatureClass):
                 ),
                 distance="0 Meters",
                 selection_type="NEW_SELECTION",
-                invert_spatial_relationship="NOT_INVERT"
+                invert=False,
 
             ),
             field="type",
-            expression="ipari",
+            expression='"ipari"',
             code_block="",
 
         )
@@ -63,11 +64,11 @@ class FeatureClassBuildingArea(AbstractFeatureClass):
                 ),
                 distance="0 Meters",
                 selection_type="NEW_SELECTION",
-                invert_spatial_relationship="NOT_INVERT"
+                invert=False,
 
             ),
             field="type",
-            expression="ipari",
+            expression='"ipari"',
             code_block="",
 
         )
@@ -79,11 +80,11 @@ class FeatureClassBuildingArea(AbstractFeatureClass):
                 ),
                 distance="0 Meters",
                 selection_type="NEW_SELECTION",
-                invert_spatial_relationship="NOT_INVERT"
+                invert=False,
 
             ),
             field="type",
-            expression="ipari",
+            expression='"ipari"',
             code_block="",
 
         )
@@ -96,11 +97,11 @@ class FeatureClassBuildingArea(AbstractFeatureClass):
                 ),
                 distance="0 Meters",
                 selection_type="NEW_SELECTION",
-                invert_spatial_relationship="NOT_INVERT"
+                invert=False,
 
             ),
             field="type",
-            expression="ipari",
+            expression='"ipari"',
             code_block="",
 
         )
@@ -112,11 +113,11 @@ class FeatureClassBuildingArea(AbstractFeatureClass):
                 ),
                 distance="0 Meters",
                 selection_type="NEW_SELECTION",
-                invert_spatial_relationship="NOT_INVERT"
+                invert=False,
 
             ),
             field="type",
-            expression="ipari",
+            expression='"ipari"',
             code_block="",
 
         )
@@ -128,11 +129,11 @@ class FeatureClassBuildingArea(AbstractFeatureClass):
                 ),
                 distance="0 Meters",
                 selection_type="NEW_SELECTION",
-                invert_spatial_relationship="NOT_INVERT"
+                invert=False,
 
             ),
             field="type",
-            expression="mezőgazdasági",
+            expression='"mezőgazdasági"',
             code_block="",
 
         )
@@ -144,11 +145,11 @@ class FeatureClassBuildingArea(AbstractFeatureClass):
                 ),
                 distance="0 Meters",
                 selection_type="NEW_SELECTION",
-                invert_spatial_relationship="NOT_INVERT"
+                invert=False,
 
             ),
             field="type",
-            expression="mezőgazdasági",
+            expression='"mezőgazdasági"',
             code_block="",
 
         )
@@ -235,4 +236,5 @@ class FeatureClassBuildingArea(AbstractFeatureClass):
             expression_type="PYTHON3",
             code_block="",
         )
+
 

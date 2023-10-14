@@ -15,6 +15,6 @@ class FeatureClassPlacePoint(AbstractFeatureClass):
         self.fcgeometry.calculate_field(
             in_table=budapest_point,
             field="place",
-            expression="capitol",
+            expression='"capitol"',
             code_block="",
         )

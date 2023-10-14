@@ -3,7 +3,6 @@ from processing.abstract.feature_process_abstract import AbstractFeatureClass
 from processing.railway_line import FeatureClassRailwayLine
 
 #TODO HEV allomas nem snappelt és forgatot
-# TODO leszűrni a kisvasuti állomásokat, átteni "narrow_gauge" railway type alá, vmit csinálok vele, de tesztelni kell
 class FeatureClassRailwayPoint(AbstractFeatureClass):
     def __init__(self, feature: str) -> None:
         """
